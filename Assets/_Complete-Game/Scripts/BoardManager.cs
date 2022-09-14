@@ -42,7 +42,7 @@ namespace Completed
 
 
         //Clears our list gridPositions and prepares it to generate a new board.
-        void InitialiseList()
+        void InitializeList()
         {
             //Clear our list gridPositions.
             gridPositions.Clear();
@@ -134,8 +134,8 @@ namespace Completed
             //Creates the outer walls and floor.
             BoardSetup();
 
-            //Reset our list of gridpositions.
-            InitialiseList();
+            //Reset our list of grid positions.
+            InitializeList();
 
             //Instantiate a random number of wall tiles based on minimum and maximum, at randomized positions.
             LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
