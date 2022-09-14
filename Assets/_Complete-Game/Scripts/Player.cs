@@ -8,7 +8,7 @@ namespace Completed
     //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
     public class Player : MovingObject
     {
-        public static Vector2 position = Vector2.zero;
+        public static Vector3 position = Vector3.zero;
 
         public float restartLevelDelay = 1f;        //Delay time in seconds to restart level.
         public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
@@ -57,6 +57,8 @@ namespace Completed
 
         private void Update()
         {
+            position = transform.position;
+
             //If it's not the player's turn, exit the function.
             if (!GameManager.instance.playersTurn)
                 return;
