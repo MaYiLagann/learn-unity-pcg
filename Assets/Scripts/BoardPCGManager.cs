@@ -24,7 +24,7 @@ public class BoardPCGManager : MonoBehaviour
     public GameObject[] floorTiles;
 
     private Transform boardHolder;
-    private Dictionary<Vector2, Vector2> gridPositions = new Dictionary<Vector2, Vector2>();
+    private List<Vector2> gridPositions = new List<Vector2>();
 
     public void BoardSetup()
     {
@@ -34,13 +34,84 @@ public class BoardPCGManager : MonoBehaviour
         {
             for (int y = 0; y < rows; y++)
             {
-                gridPositions.Add(new Vector2(x, y), new Vector2(x, y));
+                gridPositions.Add(new Vector2(x, y));
 
                 var toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
                 var instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity);
 
                 instance.transform.SetParent(boardHolder);
             }
+        }
+    }
+
+    public void AddToBoard(int horizontal, int vertical)
+    {
+        if (horizontal == 1)
+        {
+            var x = (int)Completed.Player.position.x;
+            var sightX = x + 2;
+            for (x += 1; x <= sightX; x++)
+            {
+                var y = (int)Completed.Player.position.y;
+                var sightY = y + 1;
+                for (y -= 1; y <= sightY; y++)
+                {
+                    AddTiles(new Vector2(x, y));
+                }
+            }
+        }
+        else if (horizontal == -1)
+        {
+            var x = (int)Completed.Player.position.x;
+            var sightX = x - 2;
+            for (x -= 1; x >= sightX; x--)
+            {
+                var y = (int)Completed.Player.position.y;
+                var sightY = y + 1;
+                for (y -= 1; y <= sightY; y++)
+                {
+                    AddTiles(new Vector2(x, y));
+                }
+            }
+        }
+        else if (vertical == 1)
+        {
+            var y = (int)Completed.Player.position.y;
+            var sightY = y + 2;
+            for (y += 1; y <= sightY; y++)
+            {
+                var x = (int)Completed.Player.position.x;
+                var sightX = x + 1;
+                for (x -= 1; x <= sightX; x++)
+                {
+                    AddTiles(new Vector2(x, y));
+                }
+            }
+        }
+        else if (vertical == -1)
+        {
+            var y = (int)Completed.Player.position.y;
+            var sightY = y - 2;
+            for (y -= 1; y >= sightY; y--)
+            {
+                var x = (int)Completed.Player.position.x;
+                var sightX = x + 1;
+                for (x -= 1; x <= sightX; x++)
+                {
+                    AddTiles(new Vector2(x, y));
+                }
+            }
+        }
+    }
+
+    private void AddTiles(Vector3 tileToAdd)
+    {
+        if (!gridPositions.Contains(tileToAdd))
+        {
+            gridPositions.Add(tileToAdd);
+            var toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
+            var instance = Instantiate(toInstantiate, new Vector3(tileToAdd.x, tileToAdd.y, 0f), Quaternion.identity);
+            instance.transform.SetParent(boardHolder);
         }
     }
 }
