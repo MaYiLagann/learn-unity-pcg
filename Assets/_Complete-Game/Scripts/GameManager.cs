@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Completed
 {
-    using System.Collections.Generic;       //Allows us to use Lists. 
+    using System.Collections.Generic;       //Allows us to use Lists.
     using UnityEngine.UI;                   //Allows us to use UI.
 
     public class GameManager : MonoBehaviour
@@ -47,7 +47,7 @@ namespace Completed
             //Assign enemies to a new List of Enemy objects.
             enemies = new List<Enemy>();
 
-            //Call the InitGame function to initialize the first level 
+            //Call the InitGame function to initialize the first level
             InitGame();
         }
 
@@ -163,7 +163,7 @@ namespace Completed
                 //Call the MoveEnemy function of Enemy at index i in the enemies List.
                 enemies[i].MoveEnemy();
 
-                //Wait for Enemy's moveTime before moving next Enemy, 
+                //Wait for Enemy's moveTime before moving next Enemy,
                 yield return new WaitForSeconds(enemies[i].moveTime);
             }
             //Once Enemies are done moving, set playersTurn to true so player can move.
@@ -171,6 +171,11 @@ namespace Completed
 
             //Enemies are done moving, set enemiesMoving to false.
             enemiesMoving = false;
+        }
+
+        public void UpdateBoard(int horizontal, int vertical)
+        {
+            boardManager.AddToBoard(horizontal, vertical);
         }
     }
 }
