@@ -22,6 +22,7 @@ public class BoardPCGManager : MonoBehaviour
     public int columns = 5;
     public int rows = 5;
     public GameObject[] floorTiles;
+    public GameObject[] wallTiles;
 
     private Transform boardHolder;
     private List<Vector2> gridPositions = new List<Vector2>();
@@ -112,6 +113,13 @@ public class BoardPCGManager : MonoBehaviour
             var toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
             var instance = Instantiate(toInstantiate, new Vector3(tileToAdd.x, tileToAdd.y, 0f), Quaternion.identity);
             instance.transform.SetParent(boardHolder);
+
+            if (Random.Range(0, 3) == 1)
+            {
+                toInstantiate = wallTiles[Random.Range(0, wallTiles.Length)];
+                instance = Instantiate(toInstantiate, new Vector3(tileToAdd.x, tileToAdd.y, 0f), Quaternion.identity);
+                instance.transform.SetParent(boardHolder);
+            }
         }
     }
 }
