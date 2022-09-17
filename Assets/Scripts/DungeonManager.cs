@@ -10,6 +10,8 @@ public class DungeonManager : MonoBehaviour
     public int maxBound = 1;
     public int minChamberSize = 1;
     public int maxChamberSize = 1;
+    public int chancePath = 5;
+    public int chanceChamber = 10;
 
     [NonSerialized]
     public Dictionary<Vector2, TileType> gridPositions = new Dictionary<Vector2, TileType>();
@@ -70,7 +72,7 @@ public class DungeonManager : MonoBehaviour
         {
             var path = paths[i];
 
-            if (Random.Range(0, 5) == 1)
+            if (Random.Range(0, chancePath) == 1)
             {
                 if (!path.TryGetRandomPathTile(out var nextPos))
                     continue;
@@ -80,7 +82,7 @@ public class DungeonManager : MonoBehaviour
                     paths.Add(nextPath);
             }
 
-            if (Random.Range(0, 10) == 1)
+            if (Random.Range(0, chanceChamber) == 1)
             {
                 BuildRandomChamber(path);
             }
