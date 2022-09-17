@@ -95,6 +95,8 @@ namespace Completed
 
             //Call the SetupScene function of the BoardManager script, pass it current level number.
             boardManager.BoardSetup();
+
+            EnterDungeon();
         }
 
 

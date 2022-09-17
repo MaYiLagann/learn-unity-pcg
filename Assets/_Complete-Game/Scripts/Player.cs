@@ -62,6 +62,8 @@ namespace Completed
 
             // Call the Start function of the MovingObject base class.
             base.Start();
+
+            transform.position = GameManager.instance.dungeonManager.startPosition;
         }
 
 
