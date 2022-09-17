@@ -42,7 +42,7 @@ public class DungeonManager : MonoBehaviour
             if (!endPath.TryGetRandomPathTile(out var nextPos))
                 break;
 
-            var nextPath = new PathTile(TileType.Essential, nextPos, minBound, maxBound, gridPositions);
+            var nextPath = new PathTile(TileType.Essential, nextPos, minBound, maxBound, gridPositions, DirectionType.All ^ DirectionType.West);
 
             if (nextPath.position.x > endPath.position.x
                 || (nextPath.position.x >= maxBound - 1 && Random.Range(0, 2) == 1))
