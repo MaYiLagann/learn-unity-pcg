@@ -71,8 +71,7 @@ public class DungeonManager : MonoBehaviour
             {
                 if (Random.Range(0, 5) == 1)
                 {
-                    // Todo: Declare this function.
-                    // BuildRandomChamber(path);
+                    BuildRandomChamber(path);
                 }
             }
             else if (path.type == TileType.Random && path.adjacentPathTiles.Count > 1)
@@ -88,6 +87,31 @@ public class DungeonManager : MonoBehaviour
                         gridPositions.Add(nextPos, TileType.Random);
                         paths.Enqueue(nextPath);
                     }
+                }
+            }
+        }
+    }
+
+    private void BuildRandomChamber(PathTile path)
+    {
+        const int chamberSize = 3;
+
+        var randomIndex = Random.Range(0, path.adjacentPathTiles.Count);
+        var chamberOrigin = path.adjacentPathTiles[randomIndex];
+
+        for (var x = (int)chamberOrigin.x; x < chamberOrigin.x + chamberSize; x++)
+        {
+            for (var y = (int)chamberOrigin.y; y < chamberOrigin.y + chamberSize; y++)
+            {
+                var chamberTilePos = new Vector2(x, y);
+
+                if (!gridPositions.ContainsKey(chamberTilePos)
+                    && chamberTilePos.x < maxBound
+                    && chamberTilePos.x > 0
+                    && chamberTilePos.y < maxBound
+                    && chamberTilePos.y > 0)
+                {
+                    gridPositions.Add(chamberTilePos, TileType.Empty);
                 }
             }
         }
