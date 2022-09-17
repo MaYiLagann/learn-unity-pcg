@@ -21,6 +21,7 @@ public class DungeonManager : MonoBehaviour
         gridPositions.Clear();
 
         BuildEssentialPath();
+        BuildRandomPath();
     }
 
     private void BuildEssentialPath()
@@ -53,5 +54,42 @@ public class DungeonManager : MonoBehaviour
             gridPositions.Add(endPath.position, TileType.Empty);
 
         endPosition = endPath.position;
+    }
+
+    private void BuildRandomPath()
+    {
+        var paths = new Queue<PathTile>();
+
+        foreach (var grid in gridPositions)
+        {
+            paths.Enqueue(new PathTile(TileType.Random, grid.Key, minBound, maxBound, gridPositions));
+        }
+
+        foreach (var path in paths)
+        {
+            if (path.adjacentPathTiles.Count != 0)
+            {
+                if (Random.Range(0, 5) == 1)
+                {
+                    // Todo: Declare this function.
+                    // BuildRandomChamber(path);
+                }
+            }
+            else if (path.type == TileType.Random && path.adjacentPathTiles.Count > 1)
+            {
+                if (Random.Range(0, 5) == 1)
+                {
+                    var randomIndex = Random.Range(0, path.adjacentPathTiles.Count);
+                    var nextPos = path.adjacentPathTiles[randomIndex];
+
+                    if (!gridPositions.ContainsKey(nextPos))
+                    {
+                        var nextPath = new PathTile(TileType.Random, nextPos, minBound, maxBound, gridPositions);
+                        gridPositions.Add(nextPos, TileType.Random);
+                        paths.Enqueue(nextPath);
+                    }
+                }
+            }
+        }
     }
 }
