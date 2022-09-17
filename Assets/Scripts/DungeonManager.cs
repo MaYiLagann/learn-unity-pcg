@@ -6,8 +6,10 @@ using Random = UnityEngine.Random;
 
 public class DungeonManager : MonoBehaviour
 {
-    public int minBound = 0;
-    public int maxBound = 0;
+    public int minBound = 1;
+    public int maxBound = 1;
+    public int minChamberSize = 1;
+    public int maxChamberSize = 1;
 
     [NonSerialized]
     public Dictionary<Vector2, TileType> gridPositions = new Dictionary<Vector2, TileType>();
@@ -94,14 +96,13 @@ public class DungeonManager : MonoBehaviour
 
     private void BuildRandomChamber(PathTile path)
     {
-        const int chamberSize = 3;
-
+        var chamberSize = new Vector2(Random.Range(minChamberSize, maxChamberSize), Random.Range(minChamberSize, maxChamberSize));
         var randomIndex = Random.Range(0, path.adjacentPathTiles.Count);
         var chamberOrigin = path.adjacentPathTiles[randomIndex];
 
-        for (var x = (int)chamberOrigin.x; x < chamberOrigin.x + chamberSize; x++)
+        for (var x = (int)chamberOrigin.x; x < chamberOrigin.x + chamberSize.x; x++)
         {
-            for (var y = (int)chamberOrigin.y; y < chamberOrigin.y + chamberSize; y++)
+            for (var y = (int)chamberOrigin.y; y < chamberOrigin.y + chamberSize.y; y++)
             {
                 var chamberTilePos = new Vector2(x, y);
 
