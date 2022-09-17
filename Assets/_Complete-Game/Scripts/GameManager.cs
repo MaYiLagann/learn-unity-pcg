@@ -10,6 +10,8 @@ namespace Completed
     public class GameManager : MonoBehaviour
     {
         public BoardPCGManager boardManager;                    // Store a reference to our BoardManager which will set up the level.
+        public DungeonManager dungeonManager;
+        public Player player;
         public float levelStartDelay = 2f;                      // Time to wait before starting level, in seconds.
         public float turnDelay = 0.1f;                          // Delay between each Player turn.
         public int playerFoodPoints = 100;                      // Starting value for Player food points.
@@ -176,6 +178,17 @@ namespace Completed
         public void UpdateBoard(int horizontal, int vertical)
         {
             boardManager.AddToBoard(horizontal, vertical);
+        }
+
+        public void EnterDungeon()
+        {
+            dungeonManager.StartDungeon();
+            boardManager.SetDungeonBoard(dungeonManager.gridPositions, dungeonManager.maxBound, dungeonManager.endPosition);
+        }
+
+        public void ExitDungeon()
+        {
+            boardManager.SetWorldBoard();
         }
     }
 }

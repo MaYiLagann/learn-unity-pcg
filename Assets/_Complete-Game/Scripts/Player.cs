@@ -44,6 +44,9 @@ namespace Completed
         private Vector2 touchOrigin = -Vector2.one;
 #endif
 
+        private bool onWorldBoard = true;
+        private bool dungeonTransition = false;
+
 
         // Start overrides the Start function of MovingObject
         protected override void Start()
@@ -178,7 +181,7 @@ namespace Completed
             // Set the playersTurn boolean of GameManager to false now that players turn is over.
             GameManager.instance.playersTurn = false;
 
-            if (canMove)
+            if (canMove && !dungeonTransition && onWorldBoard)
             {
                 GameManager.instance.UpdateBoard(xDir, yDir);
             }
@@ -208,11 +211,9 @@ namespace Completed
             // Check if the tag of the trigger collided with is Exit.
             if (other.tag == "Exit")
             {
-                // Invoke the Restart function to start the next level with a delay of restartLevelDelay (default 1 second).
-                Invoke("Restart", restartLevelDelay);
-
-                // Disable the player object since level is over.
-                enabled = false;
+                dungeonTransition = true;
+                Invoke("GoDungeonPortal", 0.5f);
+                Destroy(other.gameObject);
             }
 
             // Check if the tag of the trigger collided with is Food.
@@ -291,6 +292,22 @@ namespace Completed
                 // Call the GameOver function of GameManager.
                 GameManager.instance.GameOver();
             }
+        }
+
+        private void GoDungeonPortal()
+        {
+            if (onWorldBoard)
+            {
+                GameManager.instance.EnterDungeon();
+                transform.position = GameManager.instance.dungeonManager.startPosition;
+            }
+            else
+            {
+                GameManager.instance.ExitDungeon();
+                transform.position = position;
+            }
+            onWorldBoard = !onWorldBoard;
+            dungeonTransition = false;
         }
     }
 }
