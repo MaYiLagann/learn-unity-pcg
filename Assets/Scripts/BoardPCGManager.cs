@@ -21,11 +21,15 @@ public class BoardPCGManager : MonoBehaviour
 
     public int columns = 5;
     public int rows = 5;
+    public GameObject exitTile;
     public GameObject[] floorTiles;
     public GameObject[] wallTiles;
+    public GameObject[] outerWallTiles;
 
     private Transform boardHolder;
     private List<Vector2> gridPositions = new List<Vector2>();
+    private Transform dungeonBoardHolder;
+    private List<Vector2> dungeonPositions = new List<Vector2>();
 
     public void BoardSetup()
     {
@@ -105,19 +109,59 @@ public class BoardPCGManager : MonoBehaviour
         }
     }
 
+    public void SetDungeonBoard(Dictionary<Vector2, TileType> dungeonTiles, int bound, Vector2 endPosition)
+    {
+        boardHolder.gameObject.SetActive(false);
+        dungeonBoardHolder = new GameObject("Dungeon").transform;
+
+        foreach (var tile in dungeonTiles)
+        {
+            var toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
+            var instance = Instantiate(toInstantiate, tile.Key, Quaternion.identity);
+            instance.transform.SetParent(dungeonBoardHolder);
+        }
+
+        for (var x = -1; x < bound + 1; x++)
+        {
+            for (var y = -1; y < bound + 1; y++)
+            {
+                if (dungeonTiles.ContainsKey(new Vector2(x, y)))
+                    continue;
+
+                var toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
+                var instance = Instantiate(toInstantiate, new Vector3(x, y, 0), Quaternion.identity);
+                instance.transform.SetParent(dungeonBoardHolder);
+            }
+        }
+    }
+
+    public void SetWorldBoard()
+    {
+        Destroy(dungeonBoardHolder.gameObject);
+        boardHolder.gameObject.SetActive(true);
+    }
+
     private void AddTiles(Vector3 tileToAdd)
     {
         if (!gridPositions.Contains(tileToAdd))
         {
             gridPositions.Add(tileToAdd);
+
             var toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
-            var instance = Instantiate(toInstantiate, new Vector3(tileToAdd.x, tileToAdd.y, 0f), Quaternion.identity);
+            var instance = Instantiate(toInstantiate, tileToAdd, Quaternion.identity);
             instance.transform.SetParent(boardHolder);
 
             if (Random.Range(0, 3) == 1)
             {
                 toInstantiate = wallTiles[Random.Range(0, wallTiles.Length)];
-                instance = Instantiate(toInstantiate, new Vector3(tileToAdd.x, tileToAdd.y, 0f), Quaternion.identity);
+                instance = Instantiate(toInstantiate, tileToAdd, Quaternion.identity);
+                instance.transform.SetParent(boardHolder);
+            }
+
+            if (Random.Range(0, 100) == 1)
+            {
+                toInstantiate = exitTile;
+                instance = Instantiate(toInstantiate, tileToAdd, Quaternion.identity);
                 instance.transform.SetParent(boardHolder);
             }
         }
