@@ -36,7 +36,8 @@ public class DungeonManager : MonoBehaviour
         var boundTracker = 0;
         while (boundTracker < maxBound)
         {
-            gridPositions.Add(endPath.position, TileType.Empty);
+            if (!TryAddGridPosition(endPath.position, TileType.Empty))
+                continue;
 
             if (!endPath.TryGetRandomPathTile(out var nextPos))
                 break;
@@ -50,8 +51,7 @@ public class DungeonManager : MonoBehaviour
             endPath = nextPath;
         }
 
-        if (!gridPositions.ContainsKey(endPath.position))
-            gridPositions.Add(endPath.position, TileType.Empty);
+        TryAddGridPosition(endPath.position, TileType.Empty);
 
         endPosition = endPath.position;
     }
@@ -75,12 +75,9 @@ public class DungeonManager : MonoBehaviour
                 if (!path.TryGetRandomPathTile(out var nextPos))
                     continue;
 
-                if (gridPositions.ContainsKey(nextPos))
-                    continue;
-
                 var nextPath = new PathTile(TileType.Random, nextPos, minBound, maxBound, gridPositions);
-                gridPositions.Add(nextPos, TileType.Random);
-                paths.Add(nextPath);
+                if (TryAddGridPosition(nextPos, TileType.Random))
+                    paths.Add(nextPath);
             }
 
             if (Random.Range(0, 10) == 1)
@@ -104,16 +101,19 @@ public class DungeonManager : MonoBehaviour
             for (var y = (int)chamberOrigin.y; y < chamberOrigin.y + chamberSize.y; y++)
             {
                 var chamberTilePos = new Vector2(x, y);
-
-                if (!gridPositions.ContainsKey(chamberTilePos)
-                    && chamberTilePos.x < maxBound
-                    && chamberTilePos.x > 0
-                    && chamberTilePos.y < maxBound
-                    && chamberTilePos.y > 0)
-                {
-                    gridPositions.Add(chamberTilePos, TileType.Empty);
-                }
+                if (chamberTilePos.x < maxBound && chamberTilePos.x > 0 && chamberTilePos.y < maxBound && chamberTilePos.y > 0)
+                    TryAddGridPosition(chamberTilePos, TileType.Empty);
             }
         }
+    }
+
+    private bool TryAddGridPosition(Vector2 position, TileType type)
+    {
+        if (gridPositions.ContainsKey(position))
+            return false;
+
+        gridPositions.Add(position, type);
+
+        return true;
     }
 }
