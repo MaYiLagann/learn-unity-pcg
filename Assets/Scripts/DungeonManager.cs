@@ -38,15 +38,13 @@ public class DungeonManager : MonoBehaviour
         {
             gridPositions.Add(endPath.position, TileType.Empty);
 
-            if (endPath.adjacentPathTiles.Count == 0)
+            if (!endPath.TryGetRandomPathTile(out var nextPos))
                 break;
 
-            var randomIndex = Random.Range(0, endPath.adjacentPathTiles.Count);
-            var nextPos = endPath.adjacentPathTiles[randomIndex];
             var nextPath = new PathTile(TileType.Essential, nextPos, minBound, maxBound, gridPositions);
 
             if (nextPath.position.x > endPath.position.x
-                || (nextPath.position.x == maxBound - 1 && Random.Range(0, 2) == 1))
+                || (nextPath.position.x >= maxBound - 1 && Random.Range(0, 2) == 1))
                 boundTracker++;
 
             endPath = nextPath;
@@ -60,45 +58,46 @@ public class DungeonManager : MonoBehaviour
 
     private void BuildRandomPath()
     {
-        var paths = new Queue<PathTile>();
+        var paths = new List<PathTile>();
 
         foreach (var grid in gridPositions)
         {
-            paths.Enqueue(new PathTile(TileType.Random, grid.Key, minBound, maxBound, gridPositions));
+            paths.Add(new PathTile(TileType.Random, grid.Key, minBound, maxBound, gridPositions));
         }
 
-        foreach (var path in paths)
+        var i = 0;
+        while (i < paths.Count)
         {
-            if (path.adjacentPathTiles.Count != 0)
-            {
-                if (Random.Range(0, 5) == 1)
-                {
-                    BuildRandomChamber(path);
-                }
-            }
-            else if (path.type == TileType.Random && path.adjacentPathTiles.Count > 1)
-            {
-                if (Random.Range(0, 5) == 1)
-                {
-                    var randomIndex = Random.Range(0, path.adjacentPathTiles.Count);
-                    var nextPos = path.adjacentPathTiles[randomIndex];
+            var path = paths[i];
 
-                    if (!gridPositions.ContainsKey(nextPos))
-                    {
-                        var nextPath = new PathTile(TileType.Random, nextPos, minBound, maxBound, gridPositions);
-                        gridPositions.Add(nextPos, TileType.Random);
-                        paths.Enqueue(nextPath);
-                    }
-                }
+            if (Random.Range(0, 5) == 1)
+            {
+                if (!path.TryGetRandomPathTile(out var nextPos))
+                    continue;
+
+                if (gridPositions.ContainsKey(nextPos))
+                    continue;
+
+                var nextPath = new PathTile(TileType.Random, nextPos, minBound, maxBound, gridPositions);
+                gridPositions.Add(nextPos, TileType.Random);
+                paths.Add(nextPath);
             }
+
+            if (Random.Range(0, 10) == 1)
+            {
+                BuildRandomChamber(path);
+            }
+
+            i++;
         }
     }
 
     private void BuildRandomChamber(PathTile path)
     {
         var chamberSize = new Vector2(Random.Range(minChamberSize, maxChamberSize), Random.Range(minChamberSize, maxChamberSize));
-        var randomIndex = Random.Range(0, path.adjacentPathTiles.Count);
-        var chamberOrigin = path.adjacentPathTiles[randomIndex];
+
+        if (!path.TryGetRandomPathTile(out var chamberOrigin))
+            return;
 
         for (var x = (int)chamberOrigin.x; x < chamberOrigin.x + chamberSize.x; x++)
         {

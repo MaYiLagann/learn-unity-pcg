@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 public enum TileType
 {
     Empty,
@@ -13,18 +15,18 @@ public enum TileType
 public class PathTile
 {
     public TileType type;
-
     public Vector2 position;
-    public List<Vector2> adjacentPathTiles;
+
+    private List<Vector2> adjacentPathTiles;
 
     public PathTile(TileType type, Vector2 position, int minBound, int maxBound, Dictionary<Vector2, TileType> currentTiles)
     {
         this.type = type;
         this.position = position;
-        this.adjacentPathTiles = GetAdjacentPathTiles(minBound, maxBound, currentTiles);
+        this.adjacentPathTiles = CreateAdjacentPathTiles(minBound, maxBound, currentTiles);
     }
 
-    public List<Vector2> GetAdjacentPathTiles(int minBound, int maxBound, Dictionary<Vector2, TileType> currentTiles)
+    private List<Vector2> CreateAdjacentPathTiles(int minBound, int maxBound, Dictionary<Vector2, TileType> currentTiles)
     {
         var pathTiles = new List<Vector2>();
 
@@ -51,5 +53,17 @@ public class PathTile
         }
 
         return pathTiles;
+    }
+
+    public bool TryGetRandomPathTile(out Vector2 position)
+    {
+        position = Vector2.zero;
+
+        if (adjacentPathTiles.Count == 0)
+            return false;
+
+        position = adjacentPathTiles[Random.Range(0, adjacentPathTiles.Count)];
+
+        return true;
     }
 }
