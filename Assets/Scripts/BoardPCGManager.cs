@@ -19,8 +19,6 @@ public class BoardPCGManager : MonoBehaviour
         }
     }
 
-    public int columns = 5;
-    public int rows = 5;
     public GameObject exitTile;
     public GameObject[] floorTiles;
     public GameObject[] wallTiles;
@@ -34,19 +32,6 @@ public class BoardPCGManager : MonoBehaviour
     public void BoardSetup()
     {
         boardHolder = new GameObject("Board").transform;
-
-        for (int x = 0; x < columns; x++)
-        {
-            for (int y = 0; y < rows; y++)
-            {
-                gridPositions.Add(new Vector2(x, y));
-
-                var toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
-                var instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity);
-
-                instance.transform.SetParent(boardHolder);
-            }
-        }
     }
 
     public void AddToBoard(int horizontal, int vertical)
