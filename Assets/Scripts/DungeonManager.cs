@@ -26,37 +26,32 @@ public class DungeonManager : MonoBehaviour
     private void BuildEssentialPath()
     {
         var randomY = Random.Range(0, maxBound + 1);
-        var ePath = new PathTile(TileType.Essential, Vector2.up * randomY, minBound, maxBound, gridPositions);
+        var endPath = new PathTile(TileType.Essential, Vector2.up * randomY, minBound, maxBound, gridPositions);
 
-        startPosition = ePath.position;
+        startPosition = endPath.position;
 
         var boundTracker = 0;
         while (boundTracker < maxBound)
         {
-            gridPositions.Add(ePath.position, TileType.Empty);
+            gridPositions.Add(endPath.position, TileType.Empty);
 
-            var adjacentTileCount = ePath.adjacentPathTiles.Count;
-            var randomIndex = Random.Range(0, adjacentTileCount);
-            var nextEPathPos = Vector2.zero;
-
-            if (adjacentTileCount > 0)
-                nextEPathPos = ePath.adjacentPathTiles[randomIndex];
-            else
+            if (endPath.adjacentPathTiles.Count == 0)
                 break;
 
-            var nextEPath = new PathTile(TileType.Essential, nextEPathPos, minBound, maxBound, gridPositions);
+            var randomIndex = Random.Range(0, endPath.adjacentPathTiles.Count);
+            var nextPos = endPath.adjacentPathTiles[randomIndex];
+            var nextPath = new PathTile(TileType.Essential, nextPos, minBound, maxBound, gridPositions);
 
-            if (nextEPath.position.x > ePath.position.x || (nextEPath.position.x == maxBound - 1 && Random.Range(0, 2) == 1))
-            {
+            if (nextPath.position.x > endPath.position.x
+                || (nextPath.position.x == maxBound - 1 && Random.Range(0, 2) == 1))
                 boundTracker++;
-            }
 
-            ePath = nextEPath;
+            endPath = nextPath;
         }
 
-        if (!gridPositions.ContainsKey(ePath.position))
-            gridPositions.Add(ePath.position, TileType.Empty);
+        if (!gridPositions.ContainsKey(endPath.position))
+            gridPositions.Add(endPath.position, TileType.Empty);
 
-        endPosition = ePath.position;
+        endPosition = endPath.position;
     }
 }
