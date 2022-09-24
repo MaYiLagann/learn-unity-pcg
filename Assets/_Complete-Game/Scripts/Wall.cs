@@ -13,6 +13,8 @@ namespace Completed
         // hit points for the wall.
         public int hp = 3;
 
+        public GameObject[] foodTiles;
+
         // Store a component reference to the attached SpriteRenderer.
         private SpriteRenderer spriteRenderer;
 
@@ -36,8 +38,17 @@ namespace Completed
 
             // If hit points are less than or equal to zero:
             if (hp <= 0)
+            {
+                if (foodTiles.Length != 0 && Random.Range(0, 5) == 1)
+                {
+                    var toInstantiate = foodTiles[Random.Range(0, foodTiles.Length)];
+                    var instance = Instantiate(toInstantiate, transform.position, Quaternion.identity);
+                    instance.transform.SetParent(transform.parent);
+                }
+
                 // Disable the gameObject.
                 gameObject.SetActive(false);
+            }
         }
     }
 }
