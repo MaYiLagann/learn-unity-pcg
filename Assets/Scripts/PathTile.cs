@@ -9,6 +9,7 @@ public enum TileType
     Empty,
     Essential,
     Random,
+    Chest,
 }
 
 public enum DirectionType
