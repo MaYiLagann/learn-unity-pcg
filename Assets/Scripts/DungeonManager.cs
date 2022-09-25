@@ -12,6 +12,7 @@ public class DungeonManager : MonoBehaviour
     public int maxChamberSize = 1;
     public int chancePath = 5;
     public int chanceChamber = 10;
+    public int changeChest = 10;
 
     [NonSerialized]
     public Dictionary<Vector2, TileType> gridPositions = new Dictionary<Vector2, TileType>();
@@ -104,7 +105,16 @@ public class DungeonManager : MonoBehaviour
             {
                 var chamberTilePos = new Vector2(x, y);
                 if (chamberTilePos.x < maxBound && chamberTilePos.x > 0 && chamberTilePos.y < maxBound && chamberTilePos.y > 0)
-                    TryAddGridPosition(chamberTilePos, TileType.Empty);
+                {
+                    if (Random.Range(0, changeChest) == 1)
+                    {
+                        TryAddGridPosition(chamberTilePos, TileType.Chest);
+                    }
+                    else
+                    {
+                        TryAddGridPosition(chamberTilePos, TileType.Empty);
+                    }
+                }
             }
         }
     }
